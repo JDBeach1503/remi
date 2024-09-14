@@ -1,90 +1,107 @@
 <template>
   <div class="custom-track-creation">
-    <div class="stars"></div>
     <h1 class="title">Track Generator</h1>
 
-    <section class="ambiance-section">
-      <label>Ambiance ({{ pinkAmbiances.length }}):</label>
-      <div class="selected-ambiance">
-        <span
-          class="tag"
-          v-for="(ambiance, index) in pinkAmbiances"
+    <!-- Ambiance Selection -->
+    <div class="ambiance-section">
+      <label>Ambiance ({{ selectedAmbiances.length }}/3):</label>
+      <div class="ambiance-tags">
+        <!-- Display pink bubbles for selected ambiances -->
+        <div
+          v-for="(ambiance, index) in selectedAmbiances"
           :key="index"
+          class="ambiance-tag selected"
+          @click="removeAmbiance(index)"
+        >
+          {{ ambiance }} <span class="remove">x</span>
+        </div>
+        <!-- Display yellow bubbles for available ambiances -->
+        <div
+          v-for="(ambiance, index) in availableAmbiances"
+          :key="index"
+          class="ambiance-tag available"
+          @click="moveToSelected(index)"
         >
           {{ ambiance }}
-          <span class="remove" @click="removePinkAmbiance(index)">x</span>
-        </span>
+        </div>
       </div>
-      <div class="available-ambiance">
-        <span
-          class="tag available"
-          v-for="(ambiance, index) in yellowAmbiances"
-          :key="index"
-          @click="moveToPink(index)"
-        >
-          {{ ambiance }}
-        </span>
-      </div>
-    </section>
+    </div>
 
-    <section class="prompt-section">
+    <!-- Prompt -->
+    <div class="prompt-section">
       <label for="prompt">Prompt:</label>
-      <input
-        id="prompt"
-        v-model="newAmbiance"
-        @keyup.enter="addNewAmbiance"
-        placeholder="Type an ambiance and press Enter"
-      />
-    </section>
+      <textarea id="prompt" v-model="prompt" @keydown.enter.prevent="addAmbianceFromPrompt" placeholder="Enter your ambiance..."></textarea>
+    </div>
 
-    <section class="length-section">
-      <label for="length">Length:</label>
-      <div id="length" class="length-display">00:00:00</div>
-    </section>
+    <!-- Length -->
+    <div class="length-section">
+      <label>Length:</label>
+      <div class="length-display">00:00:00</div>
+    </div>
 
-    <button class="generate-button">Generate</button>
+    <!-- Track Name and Color Selection -->
+    <div class="track-details-section">
+      <label for="trackName">Track Name:</label>
+      <input type="text" id="trackName" v-model="trackName" required />
+
+      <label for="trackColor">Pick a Color:</label>
+      <input type="color" id="trackColor" v-model="trackColor" required />
+    </div>
+
+    <!-- Generate Button -->
+    <button @click="generateTrack">Generate</button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'CustomTrackCreation',
+  name: "CustomTrackCreation",
   data() {
     return {
-      pinkAmbiances: [],
-      yellowAmbiances: [
-        'classroom',
-        'waves',
-        'crickets',
-        'wind',
-        'fireplace',
-        'birds',
-        'city traffic',
-      ],
-      newAmbiance: '',
+      selectedAmbiances: ["white noise", "rain", "talking"], // Pre-selected for example
+      availableAmbiances: ["classroom", "waves", "crickets", "wind", "fireplace", "birds", "city traffic"],
+      prompt: "",
+      trackName: "",
+      trackColor: "#FF7F7F", // Default color
     };
   },
   methods: {
-    addNewAmbiance() {
-      const ambiance = this.newAmbiance.trim();
-      if (ambiance) {
-        if (this.pinkAmbiances.length < 3) {
-          this.pinkAmbiances.push(ambiance);
+    addAmbianceFromPrompt() {
+      if (this.prompt.trim()) {
+        if (this.selectedAmbiances.length < 3) {
+          this.selectedAmbiances.push(this.prompt.trim());
         } else {
-          this.yellowAmbiances.push(ambiance);
+          this.availableAmbiances.push(this.prompt.trim());
         }
-        this.newAmbiance = '';
+        this.prompt = ""; // Clear the prompt input
       }
     },
-    moveToPink(index) {
-      if (this.pinkAmbiances.length < 3) {
-        const ambiance = this.yellowAmbiances.splice(index, 1)[0];
-        this.pinkAmbiances.push(ambiance);
+    addAmbiance(ambiance) {
+      if (this.selectedAmbiances.length < 3 && !this.selectedAmbiances.includes(ambiance)) {
+        this.selectedAmbiances.push(ambiance);
       }
     },
-    removePinkAmbiance(index) {
-      const ambiance = this.pinkAmbiances.splice(index, 1)[0];
-      this.yellowAmbiances.push(ambiance);
+    removeAmbiance(index) {
+      this.selectedAmbiances.splice(index, 1);
+    },
+    moveToSelected(index) {
+      if (this.selectedAmbiances.length < 3) {
+        this.selectedAmbiances.push(this.availableAmbiances.splice(index, 1)[0]);
+      }
+    },
+    generateTrack() {
+      const newTrack = {
+        name: this.trackName,
+        color: this.trackColor,
+        ambiances: this.selectedAmbiances,
+        prompt: this.prompt,
+      };
+      this.$router.push({
+        name: "DreamFactory",
+        params: {
+          newTrack,
+        },
+      });
     },
   },
 };
@@ -92,113 +109,104 @@ export default {
 
 <style scoped>
 .custom-track-creation {
-  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
+  min-height: 100vh;
   padding: 20px;
-  position: relative;
-  color: #dda0dd; /* Light purple/pink color */
-  font-family: 'Arial', sans-serif;
-}
-
-.stars {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   background: url('@/assets/stars.png') repeat;
   background-size: cover;
-  z-index: -1;
+  color: white;
+  font-family: Arial, sans-serif;
 }
 
 .title {
   font-size: 2.5em;
-  margin: 20px 0;
-  text-align: center;
+  color: #dda0dd;
+  margin-bottom: 20px;
 }
 
-.ambiance-section,
-.prompt-section,
-.length-section {
+.ambiance-section {
   width: 100%;
   max-width: 500px;
   margin-bottom: 20px;
 }
 
-.ambiance-section label,
-.prompt-section label,
-.length-section label {
-  font-size: 1.2em;
-  margin-bottom: 10px;
-  display: block;
-  text-transform: capitalize; /* Ensures first letter is capitalized */
-}
-
-.selected-ambiance,
-.available-ambiance {
+.ambiance-tags {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  margin-top: 10px;
 }
 
-.tag {
-  background-color: #e6a8e6;
-  color: white;
-  padding: 10px 15px;
+.ambiance-tag {
+  padding: 8px 12px;
   border-radius: 20px;
-  display: inline-flex;
-  align-items: center;
   cursor: pointer;
-  font-size: 1em;
+  font-size: 0.9em;
 }
 
-.remove {
-  margin-left: 10px;
-  font-size: 0.8em;
-  cursor: pointer;
+.selected {
+  background-color: #dda0dd;
+  color: white;
 }
 
 .available {
-  background-color: #d4b100; /* Darker yellow shade */
+  background-color: #ffd700;
+  color: black;
 }
 
-#prompt {
+.remove {
+  margin-left: 5px;
+  color: white;
+  cursor: pointer;
+}
+
+.prompt-section,
+.length-section,
+.track-details-section {
+  width: 100%;
+  max-width: 500px;
+  margin-bottom: 20px;
+}
+
+textarea {
   width: 100%;
   padding: 10px;
-  border: 2px solid #dda0dd;
-  border-radius: 10px;
+  border-radius: 5px;
+  border: none;
+  background-color: #333;
+  color: white;
   font-size: 1em;
-  color: #dda0dd;
-}
-
-.length-section {
-  display: flex;
-  align-items: center;
+  height: 100px;
 }
 
 .length-display {
   font-size: 1.5em;
-  margin-left: 10px;
   color: #dda0dd;
 }
 
-.generate-button {
-  background-color: #dda0dd;
+.track-details-section input[type="text"],
+.track-details-section input[type="color"] {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
   border: none;
-  border-radius: 50px;
-  color: white;
-  padding: 15px 40px;
-  font-size: 1.5em;
-  cursor: pointer;
-  box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
-  margin-top: 20px;
+  margin-bottom: 10px;
+  font-size: 1em;
 }
 
-.generate-button:hover {
-  background-color: #e6a8e6;
+button {
+  padding: 10px 20px;
+  background-color: #ff7f7f;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2em;
+  cursor: pointer;
+  color: white;
+}
+
+button:hover {
+  background-color: #ff4f4f;
 }
 </style>
