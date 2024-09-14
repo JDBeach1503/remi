@@ -1,7 +1,7 @@
 <template>
   <div class="welcome">
     <div class="stars"></div>
-    <h1 class="greeting">Sweet Dreams, User</h1>
+    <h1 class="greeting">Sweet Dreams, Jackson</h1>
     <button class="dream-generator" @click="goToDreamFactory">Dream Generator</button>
     <p class="footer">REMI</p>
   </div>

@@ -110,18 +110,18 @@ export default {
     generateTrack() {
       // Mapping of keywords to track filenames
       const keywordToTrackMap = {
-        rain: "/tracks/gentlerain.mp3",
-        seaside: "/tracks/seaside.mp3",
-        forest: "/tracks/forest.mp3",
-        wind: "/tracks/windy.mp3",
-        fireplace: "/tracks/fireplace.mp3",
-        birds: "/tracks/birds.mp3",
+        "rain": "/tracks/gentlerain.mp3",
+        "seaside": "/tracks/seaside.mp3",
+        "forest": "/tracks/forest.mp3",
+        "wind": "/tracks/windy.mp3",
+        "fireplace": "/tracks/fireplace.mp3",
+        "birds": "/tracks/birds.mp3",
         "white noise": "/tracks/whitenoise.mp3",
         "city traffic": "/tracks/nighttimecity.mp3",
-        classroom: "/tracks/classroom.mp3",
-        crickets: "/tracks/crickets.mp3",
-        waves: "/tracks/waves.mp3",
-        talking: "/tracks/talking.mp3",
+        "classroom": "/tracks/classroom.mp3",
+        "crickets": "/tracks/crickets.mp3",
+        "waves": "/tracks/waves.mp3",
+        "talking": "/tracks/talking.mp3",
         // Add more mappings here...
       };
 
