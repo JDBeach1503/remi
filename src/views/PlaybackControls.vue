@@ -18,7 +18,7 @@
 
     <div class="controls">
       <i class="fas fa-backward"></i>
-      <i class="fas fa-play-circle play"></i>
+      <i :class="isPlaying ? 'fas fa-pause-circle play' : 'fas fa-play-circle play'" @click="togglePlay"></i>
       <i class="fas fa-forward"></i>
     </div>
   </div>
@@ -33,10 +33,21 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      isPlaying: false, // Initially set to not playing
+    };
+  },
+  methods: {
+    togglePlay() {
+      this.isPlaying = !this.isPlaying; // Toggle the play/pause state
+    },
+  },
 };
 </script>
 
 <style scoped>
+/* Existing styles */
 .playback-controls {
   height: 100vh;
   display: flex;
