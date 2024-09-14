@@ -30,7 +30,12 @@
     <!-- Prompt -->
     <div class="prompt-section">
       <label for="prompt">Prompt:</label>
-      <textarea id="prompt" v-model="prompt" @keydown.enter.prevent="addAmbianceFromPrompt" placeholder="Enter your ambiance..."></textarea>
+      <textarea
+        id="prompt"
+        v-model="prompt"
+        @keydown.enter.prevent="addAmbianceFromPrompt"
+        placeholder="Enter your ambiance..."
+      ></textarea>
     </div>
 
     <!-- Length -->
@@ -59,7 +64,15 @@ export default {
   data() {
     return {
       selectedAmbiances: ["white noise", "rain", "talking"], // Pre-selected for example
-      availableAmbiances: ["classroom", "waves", "crickets", "wind", "fireplace", "birds", "city traffic"],
+      availableAmbiances: [
+        "classroom",
+        "waves",
+        "crickets",
+        "wind",
+        "fireplace",
+        "birds",
+        "city traffic",
+      ],
       prompt: "",
       trackName: "",
       trackColor: "#FF7F7F", // Default color
@@ -77,7 +90,10 @@ export default {
       }
     },
     addAmbiance(ambiance) {
-      if (this.selectedAmbiances.length < 3 && !this.selectedAmbiances.includes(ambiance)) {
+      if (
+        this.selectedAmbiances.length < 3 &&
+        !this.selectedAmbiances.includes(ambiance)
+      ) {
         this.selectedAmbiances.push(ambiance);
       }
     },
@@ -86,27 +102,52 @@ export default {
     },
     moveToSelected(index) {
       if (this.selectedAmbiances.length < 3) {
-        this.selectedAmbiances.push(this.availableAmbiances.splice(index, 1)[0]);
+        this.selectedAmbiances.push(
+          this.availableAmbiances.splice(index, 1)[0]
+        );
       }
     },
     generateTrack() {
-      if (this.trackName && this.trackColor) { // Ensure both are provided
-    const newTrack = {
-      name: this.trackName,
-      color: this.trackColor,
-      ambiances: this.selectedAmbiances,
-      prompt: this.prompt,
-    };
+      // Mapping of keywords to track filenames
+      const keywordToTrackMap = {
+        rain: "/tracks/gentlerain.mp3",
+        seaside: "/tracks/seaside.mp3",
+        forest: "/tracks/forest.mp3",
+        wind: "/tracks/windy.mp3",
+        fireplace: "/tracks/fireplace.mp3",
+        birds: "/tracks/birds.mp3",
+        "white noise": "/tracks/whitenoise.mp3",
+        "city traffic": "/tracks/nighttimecity.mp3",
+        classroom: "/tracks/classroom.mp3",
+        crickets: "/tracks/crickets.mp3",
+        waves: "/tracks/waves.mp3",
+        talking: "/tracks/talking.mp3",
+        // Add more mappings here...
+      };
 
-    localStorage.setItem('newTrack', JSON.stringify(newTrack));
-    console.log("New Track Created:", newTrack);
+      // Find the first keyword that matches a track
+      let matchedTrack = "/tracks/default.mp3"; // Default track if no match is found
+      for (const ambiance of this.selectedAmbiances) {
+        if (keywordToTrackMap[ambiance.toLowerCase()]) {
+          matchedTrack = keywordToTrackMap[ambiance.toLowerCase()];
+          break;
+        }
+      }
 
-    this.$router.push({
-      name: "DreamFactory",
-    });
-  } else {
-    alert('Please enter a track name and select a color.');
-  }
+      const newTrack = {
+        name: this.trackName,
+        color: this.trackColor,
+        ambiances: this.selectedAmbiances,
+        track: matchedTrack, // Assign the matched track
+      };
+
+      localStorage.setItem("newTrack", JSON.stringify(newTrack));
+      this.$router.push({
+        name: "DreamFactory",
+        params: {
+          newTrack,
+        },
+      });
     },
   },
 };
@@ -120,7 +161,7 @@ export default {
   justify-content: center;
   min-height: 100vh;
   padding: 20px;
-  background: url('@/assets/stars.png') repeat;
+  background: url("@/assets/stars.png") repeat;
   background-size: cover;
   color: white;
   font-family: Arial, sans-serif;

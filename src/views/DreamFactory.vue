@@ -67,39 +67,34 @@ export default {
   name: 'DreamFactory',
   data() {
     return {
-      historyTracks: [], // Start with an empty history
       templateTracks: [
-        { name: "Track 1", color: "#7FFFFF" },
-        { name: "Track 2", color: "#7F7FFF" },
-        { name: "Track 3", color: "#BF7FFF" },
-        { name: "Track 4", color: "#FF7FFF" },
+        { name: "Winter Mountain", color: "#7FFFFF", track: "/tracks/wintermountain.mp3" },
+        { name: "Fluffy Clouds", color: "#7F7FFF", track: "/tracks/fluffyclouds.mp3" },
+        { name: "Ocean Vibes", color: "#BF7FFF", track: "/tracks/oceanvibes.mp3" },
+        { name: "Dream Desert", color: "#FF7FFF", track: "/tracks/dreamdesert.mp3" },
       ],
       customTracks: [], // Start with an empty list of custom tracks
+      historyTracks: [], // History tracking as before
     };
   },
   methods: {
     goToCustomTrack() {
       this.$router.push('/custom-track-creation');
     },
-    goToPlaybackControls(track) {
-  let coverImage, trackTitle;
+goToPlaybackControls(track) {
+  let coverImage = track.color;
+  let trackTitle = track.name || 'Track Title';
+  let trackSrc = track.track; // Get the associated track source
 
-  // Check if `track` is an object (from "TEMPLATES" or "CUSTOM TRACKS")
-  if (typeof track === 'object') {
-    coverImage = track.color;
-    trackTitle = track.name || 'Track Title';
-  } else {
-    // If `track` is just a color (from "HISTORY")
-    coverImage = track;
-    trackTitle = 'Track Title'; // Default title for "HISTORY" tracks
-  }
-
-  console.log("Navigating to PlaybackControls with:", { coverImage, trackTitle });
+  console.log("Navigating to PlaybackControls with:", { coverImage, trackTitle, trackSrc });
 
   this.$router.push({
     name: 'PlaybackControls',
     params: { coverImage },
-    query: { trackTitle }, // Pass trackTitle as a query parameter
+    query: {
+      trackTitle,
+      trackSrc,
+    },
   });
 },
     addToHistoryAndGoToPlayback(track) {

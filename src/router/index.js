@@ -12,10 +12,7 @@ const routes = [
     path: '/playback-controls/:coverImage',
     name: 'PlaybackControls',
     component: PlaybackControls,
-    props: route => ({
-      coverImage: route.params.coverImage,
-      trackTitle: route.params.trackTitle || 'Track Title',
-    }),
+    props: true,
   },
   // Other routes...
 ];

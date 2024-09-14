@@ -18,9 +18,15 @@
 
     <div class="controls">
       <i class="fas fa-backward"></i>
-      <i class="fas fa-play-circle play"></i>
+      <i
+        class="fas"
+        :class="isPlaying ? 'fa-pause-circle' : 'fa-play-circle'"
+        @click="togglePlayPause"
+      ></i>
       <i class="fas fa-forward"></i>
     </div>
+
+    <audio ref="audio" :src="trackSrc"></audio>
   </div>
 </template>
 
@@ -33,16 +39,30 @@ export default {
       required: true,
     },
   },
-  computed: {
-    trackTitle() {
-      return this.$route.query.trackTitle || 'Track Title'; // Default to "Track Title" if not provided
+  data() {
+    return {
+      trackTitle: this.$route.query.trackTitle || 'Track Title',
+      trackSrc: this.$route.query.trackSrc || '',
+      isPlaying: false,
+    };
+  },
+  methods: {
+    togglePlayPause() {
+      const audio = this.$refs.audio;
+      this.isPlaying = !this.isPlaying;
+      if (this.isPlaying) {
+        audio.play();
+      } else {
+        audio.pause();
+      }
     },
   },
 };
+
 </script>
 
+
 <style scoped>
-/* Existing styles */
 .playback-controls {
   height: 100vh;
   display: flex;
@@ -72,41 +92,42 @@ export default {
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-bottom: 30px; /* Increased margin for spacing */
+  margin-bottom: 30px;
 }
 
 .cover-icon {
-  width: 200px; /* Increased size */
-  height: 200px; /* Increased size */
-  border-radius: 25px; /* Slightly larger border radius */
+  width: 200px;
+  height: 200px;
+  border-radius: 25px;
 }
 
 .track-info {
   text-align: center;
-  margin-bottom: 20px; /* Increased margin for spacing */
+  margin-bottom: 20px;
 }
 
 .track-title {
-  font-size: 2em; /* Increased font size */
+  font-size: 2em;
   margin: 0;
 }
 
 .progress-container {
   width: 100%;
-  max-width: 500px; /* Increased max width */
+  max-width: 500px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 30px; /* Increased bottom margin */
+  margin-bottom: 30px;
 }
 
-.current-time, .duration {
-  font-size: 1.2em; /* Increased font size */
+.current-time,
+.duration {
+  font-size: 1.2em;
 }
 
 .progress-bar {
   width: 80%;
-  height: 10px; /* Slightly thicker progress bar */
+  height: 10px;
   background-color: #404040;
   border-radius: 5px;
   outline: none;
@@ -117,16 +138,17 @@ export default {
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  max-width: 300px; /* Increased max width */
-  margin-bottom: 30px; /* Increased bottom margin */
+  max-width: 300px;
+  margin-bottom: 30px;
 }
 
 .controls i {
-  font-size: 2em; /* Increased icon size */
+  font-size: 2em;
   cursor: pointer;
 }
 
-.play {
-  font-size: 3em; /* Increased play button size */
+.controls .fa-play-circle,
+.controls .fa-pause-circle {
+  font-size: 3em;
 }
 </style>
