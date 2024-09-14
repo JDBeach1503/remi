@@ -10,10 +10,10 @@
       <div class="category">
         <h2>custom tracks</h2>
         <div class="category-items">
-          <div class="item" style="background-color: #FF7F7F;" @click="goToCustomTrack"></div>
-          <div class="item" style="background-color: #FFBF7F;" @click="goToCustomTrack"></div>
-          <div class="item" style="background-color: #FFFF7F;" @click="goToCustomTrack"></div>
-          <div class="item" style="background-color: #7FFF7F;" @click="goToCustomTrack"></div>
+          <div class="item" style="background-color: #FF7F7F;" @click="addToHistoryAndGoToPlayback('#FF7F7F')"></div>
+          <div class="item" style="background-color: #FFBF7F;" @click="addToHistoryAndGoToPlayback('#FFBF7F')"></div>
+          <div class="item" style="background-color: #FFFF7F;" @click="addToHistoryAndGoToPlayback('#FFFF7F')"></div>
+          <div class="item" style="background-color: #7FFF7F;" @click="addToHistoryAndGoToPlayback('#7FFF7F')"></div>
         </div>
       </div>
 
@@ -21,10 +21,10 @@
       <div class="category">
         <h2>templates</h2>
         <div class="category-items">
-          <div class="item" style="background-color: #7FFFFF;" @click="goToPlaybackControls('#7FFFFF')"></div>
-          <div class="item" style="background-color: #7F7FFF;" @click="goToPlaybackControls('#7F7FFF')"></div>
-          <div class="item" style="background-color: #BF7FFF;" @click="goToPlaybackControls('#BF7FFF')"></div>
-          <div class="item" style="background-color: #FF7FFF;" @click="goToPlaybackControls('#FF7FFF')"></div>
+          <div class="item" style="background-color: #7FFFFF;" @click="addToHistoryAndGoToPlayback('#7FFFFF')"></div>
+          <div class="item" style="background-color: #7F7FFF;" @click="addToHistoryAndGoToPlayback('#7F7FFF')"></div>
+          <div class="item" style="background-color: #BF7FFF;" @click="addToHistoryAndGoToPlayback('#BF7FFF')"></div>
+          <div class="item" style="background-color: #FF7FFF;" @click="addToHistoryAndGoToPlayback('#FF7FFF')"></div>
         </div>
       </div>
 
@@ -32,10 +32,7 @@
       <div class="category">
         <h2>history</h2>
         <div class="category-items">
-          <div class="item" style="background-color: #FF7FBF;" @click="goToPlaybackControls('#FF7FBF')"></div>
-          <div class="item" style="background-color: #FF7F9F;" @click="goToPlaybackControls('#FF7F9F')"></div>
-          <div class="item" style="background-color: #FF7F7F;" @click="goToPlaybackControls('#FF7F7F')"></div>
-          <div class="item" style="background-color: #FFBF9F;" @click="goToPlaybackControls('#FFBF9F')"></div>
+          <div v-for="color in history" :key="color" :style="{ backgroundColor: color }" class="item" @click="goToPlaybackControls(color)"></div>
         </div>
       </div>
     </section>
@@ -45,6 +42,11 @@
 <script>
 export default {
   name: 'DreamFactory',
+  data() {
+    return {
+      history: [], // Start with an empty history
+    };
+  },
   methods: {
     goToCustomTrack() {
       this.$router.push('/custom-track-creation');
@@ -57,6 +59,24 @@ export default {
         },
       });
     },
+    addToHistoryAndGoToPlayback(color) {
+      if (!this.history.includes(color)) {
+        this.history.unshift(color); // Prepend the selected color to the history
+        localStorage.setItem('history', JSON.stringify(this.history)); // Save history to localStorage
+      }
+      this.goToPlaybackControls(color); // Navigate to the Playback Controls screen
+    },
+    loadHistory() {
+      const savedHistory = localStorage.getItem('history');
+      if (savedHistory) {
+        this.history = JSON.parse(savedHistory);
+      }
+    },
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.loadHistory(); // Load history from localStorage
+    });
   },
 };
 </script>
