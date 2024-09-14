@@ -90,18 +90,23 @@ export default {
       }
     },
     generateTrack() {
-      const newTrack = {
-        name: this.trackName,
-        color: this.trackColor,
-        ambiances: this.selectedAmbiances,
-        prompt: this.prompt,
-      };
-      this.$router.push({
-        name: "DreamFactory",
-        params: {
-          newTrack,
-        },
-      });
+      if (this.trackName && this.trackColor) { // Ensure both are provided
+    const newTrack = {
+      name: this.trackName,
+      color: this.trackColor,
+      ambiances: this.selectedAmbiances,
+      prompt: this.prompt,
+    };
+
+    localStorage.setItem('newTrack', JSON.stringify(newTrack));
+    console.log("New Track Created:", newTrack);
+
+    this.$router.push({
+      name: "DreamFactory",
+    });
+  } else {
+    alert('Please enter a track name and select a color.');
+  }
     },
   },
 };

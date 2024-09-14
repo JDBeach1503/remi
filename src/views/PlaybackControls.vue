@@ -10,7 +10,6 @@
       <h2 class="track-title">{{ trackTitle }}</h2>
     </div>
 
-
     <div class="progress-container">
       <span class="current-time">0:00</span>
       <input type="range" class="progress-bar" value="0" min="0" max="100" />
@@ -19,13 +18,7 @@
 
     <div class="controls">
       <i class="fas fa-backward"></i>
-
-      <!-- Toggle Play/Pause Button -->
-      <i
-        :class="isPlaying ? 'fas fa-pause-circle' : 'fas fa-play-circle'"
-        @click="togglePlayPause"
-      ></i>
-
+      <i class="fas fa-play-circle play"></i>
       <i class="fas fa-forward"></i>
     </div>
   </div>
@@ -35,23 +28,14 @@
 export default {
   name: 'PlaybackControls',
   props: {
-  coverImage: {
-    type: String,
-    required: true,
+    coverImage: {
+      type: String,
+      required: true,
+    },
   },
-  trackTitle: {
-    type: String,
-    required: true,
-  },
-},
-  data() {
-    return {
-      isPlaying: false, // Track whether the audio is playing or paused
-    };
-  },
-  methods: {
-    togglePlayPause() {
-      this.isPlaying = !this.isPlaying;
+  computed: {
+    trackTitle() {
+      return this.$route.query.trackTitle || 'Track Title'; // Default to "Track Title" if not provided
     },
   },
 };

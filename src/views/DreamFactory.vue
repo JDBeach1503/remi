@@ -31,10 +31,15 @@
       <div class="category">
         <h2>templates</h2>
         <div class="category-items">
-          <div class="item" style="background-color: #7FFFFF;" @click="addToHistoryAndGoToPlayback({ name: 'Track 1', color: '#7FFFFF' })"></div>
-          <div class="item" style="background-color: #7F7FFF;" @click="addToHistoryAndGoToPlayback({ name: 'Track 2', color: '#7F7FFF' })"></div>
-          <div class="item" style="background-color: #BF7FFF;" @click="addToHistoryAndGoToPlayback({ name: 'Track 3', color: '#BF7FFF' })"></div>
-          <div class="item" style="background-color: #FF7FFF;" @click="addToHistoryAndGoToPlayback({ name: 'Track 4', color: '#FF7FFF' })"></div>
+          <div
+            v-for="(track, index) in templateTracks"
+            :key="index"
+            class="item"
+            :style="{ backgroundColor: track.color }"
+            @click="addToHistoryAndGoToPlayback(track)"
+          >
+            <span class="track-name">{{ track.name }}</span>
+          </div>
         </div>
       </div>
 
@@ -42,7 +47,15 @@
       <div class="category">
         <h2>history</h2>
         <div class="category-items">
-          <div v-for="color in history" :key="color" :style="{ backgroundColor: color }" class="item" @click="goToPlaybackControls(color)"></div>
+          <div
+            v-for="(track, index) in historyTracks"
+            :key="index"
+            class="item"
+            :style="{ backgroundColor: track.color }"
+            @click="goToPlaybackControls(track)"
+          >
+            <span class="track-name">{{ track.name }}</span>
+          </div>
         </div>
       </div>
     </section>
@@ -54,58 +67,85 @@ export default {
   name: 'DreamFactory',
   data() {
     return {
-      history: [], // Start with an empty history
+      historyTracks: [], // Start with an empty history
+      templateTracks: [
+        { name: "Track 1", color: "#7FFFFF" },
+        { name: "Track 2", color: "#7F7FFF" },
+        { name: "Track 3", color: "#BF7FFF" },
+        { name: "Track 4", color: "#FF7FFF" },
+      ],
       customTracks: [], // Start with an empty list of custom tracks
     };
   },
   methods: {
-   goToCustomTrack() {
-    this.$router.push('/custom-track-creation');
-  },
-  goToPlaybackControls(track) {
-    let coverImage, trackTitle;
+    goToCustomTrack() {
+      this.$router.push('/custom-track-creation');
+    },
+    goToPlaybackControls(track) {
+  let coverImage, trackTitle;
 
-    // Check if `track` is an object (from "TEMPLATES" or "CUSTOM TRACKS")
-    if (typeof track === 'object') {
-      coverImage = track.color;
-      trackTitle = track.name || 'Track Title';
-    } else {
-      // If `track` is just a color (from "HISTORY")
-      coverImage = track;
-      trackTitle = 'Track Title'; // Default title for "HISTORY" tracks
-    }
+  // Check if `track` is an object (from "TEMPLATES" or "CUSTOM TRACKS")
+  if (typeof track === 'object') {
+    coverImage = track.color;
+    trackTitle = track.name || 'Track Title';
+  } else {
+    // If `track` is just a color (from "HISTORY")
+    coverImage = track;
+    trackTitle = 'Track Title'; // Default title for "HISTORY" tracks
+  }
 
-    console.log("Navigating to PlaybackControls with:", { coverImage, trackTitle });
+  console.log("Navigating to PlaybackControls with:", { coverImage, trackTitle });
 
-    this.$router.push({
-      name: 'PlaybackControls',
-      params: {
-        coverImage,
-        trackTitle,
-      },
-    });
-  },
+  this.$router.push({
+    name: 'PlaybackControls',
+    params: { coverImage },
+    query: { trackTitle }, // Pass trackTitle as a query parameter
+  });
+},
     addToHistoryAndGoToPlayback(track) {
-      if (!this.history.includes(track.color)) {
-        this.history.unshift(track.color); // Prepend the selected color to the history
-        localStorage.setItem('history', JSON.stringify(this.history)); // Save history to localStorage
+      console.log("Adding track to history:", track);
+
+      // Check if the track is already in the history
+      if (!this.historyTracks.find((t) => t.name === track.name)) {
+        this.historyTracks.unshift(track); // Add to history
+        console.log("History after addition:", this.historyTracks);
+
+        // Save updated history to localStorage
+        localStorage.setItem("historyTracks", JSON.stringify(this.historyTracks));
       }
-      this.goToPlaybackControls(track); // Navigate to the Playback Controls screen
+
+      this.goToPlaybackControls(track); // Navigate to Playback Controls screen
     },
     loadHistory() {
-      const savedHistory = localStorage.getItem('history');
+      const savedHistory = localStorage.getItem("historyTracks");
       if (savedHistory) {
-        this.history = JSON.parse(savedHistory);
+        try {
+          this.historyTracks = JSON.parse(savedHistory);
+          console.log("Loaded history from localStorage:", this.historyTracks);
+        } catch (error) {
+          console.error("Error parsing historyTracks from localStorage:", error);
+          this.historyTracks = []; // Reset historyTracks if parsing fails
+        }
+      } else {
+        this.historyTracks = []; // Initialize to an empty array if nothing is in localStorage
       }
     },
     addCustomTrack(track) {
+      console.log("Adding Custom Track:", track);
       this.customTracks.unshift(track); // Add the new track to the start of the customTracks array
       localStorage.setItem('customTracks', JSON.stringify(this.customTracks)); // Save custom tracks to localStorage
     },
     loadCustomTracks() {
       const savedTracks = localStorage.getItem('customTracks');
       if (savedTracks) {
-        this.customTracks = JSON.parse(savedTracks);
+        try {
+          this.customTracks = JSON.parse(savedTracks);
+        } catch (error) {
+          console.error("Error parsing customTracks from localStorage:", error);
+          this.customTracks = []; // Reset customTracks if parsing fails
+        }
+      } else {
+        this.customTracks = []; // Initialize to an empty array if nothing is in localStorage
       }
     },
   },
@@ -113,8 +153,10 @@ export default {
     next(vm => {
       vm.loadHistory(); // Load history from localStorage
       vm.loadCustomTracks(); // Load custom tracks from localStorage
-      if (to.params.newTrack) {
-        vm.addCustomTrack(to.params.newTrack); // Add the new custom track if it was just created
+      const newTrack = localStorage.getItem('newTrack');
+      if (newTrack) {
+        vm.addCustomTrack(JSON.parse(newTrack)); // Add the new custom track if it was just created
+        localStorage.removeItem('newTrack');
       }
     });
   },
@@ -189,6 +231,7 @@ header {
   color: white;
   font-weight: bold;
   text-align: center;
+  position: relative;
 }
 
 .item:hover {
@@ -196,8 +239,17 @@ header {
 }
 
 .track-name {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
   font-size: 0.9em;
-  padding: 5px;
+  padding: 0 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  color: white;
 }
 
 /* Custom Track Creation Icon Styles */
