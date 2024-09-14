@@ -9,10 +9,10 @@
       <div class="category">
         <h2>custom tracks</h2>
         <div class="category-items">
-          <div class="item" style="background-color: #FF7F7F;"></div>
-          <div class="item" style="background-color: #FFBF7F;"></div>
-          <div class="item" style="background-color: #FFFF7F;"></div>
-          <div class="item" style="background-color: #7FFF7F;"></div>
+          <div class="item" style="background-color: #FF7F7F;" @click="goToCustomTrack"></div>
+          <div class="item" style="background-color: #FFBF7F;" @click="goToCustomTrack"></div>
+          <div class="item" style="background-color: #FFFF7F;" @click="goToCustomTrack"></div>
+          <div class="item" style="background-color: #7FFF7F;" @click="goToCustomTrack"></div>
         </div>
       </div>
 
@@ -42,6 +42,11 @@
 <script>
 export default {
   name: 'DreamFactory',
+  methods: {
+    goToCustomTrack() {
+      this.$router.push('/custom-track-creation');
+    }
+  }
 };
 </script>
 
