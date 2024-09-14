@@ -6,6 +6,7 @@
     </header>
 
     <section class="categories">
+      <!-- Custom Tracks Category -->
       <div class="category">
         <h2>custom tracks</h2>
         <div class="category-items">
@@ -16,23 +17,25 @@
         </div>
       </div>
 
+      <!-- Templates Category -->
       <div class="category">
         <h2>templates</h2>
         <div class="category-items">
-          <div class="item" style="background-color: #7FFFFF;"></div>
-          <div class="item" style="background-color: #7F7FFF;"></div>
-          <div class="item" style="background-color: #BF7FFF;"></div>
-          <div class="item" style="background-color: #FF7FFF;"></div>
+          <div class="item" style="background-color: #7FFFFF;" @click="goToPlaybackControls('#7FFFFF')"></div>
+          <div class="item" style="background-color: #7F7FFF;" @click="goToPlaybackControls('#7F7FFF')"></div>
+          <div class="item" style="background-color: #BF7FFF;" @click="goToPlaybackControls('#BF7FFF')"></div>
+          <div class="item" style="background-color: #FF7FFF;" @click="goToPlaybackControls('#FF7FFF')"></div>
         </div>
       </div>
 
+      <!-- History Category -->
       <div class="category">
         <h2>history</h2>
         <div class="category-items">
-          <div class="item" style="background-color: #FF7FBF;"></div>
-          <div class="item" style="background-color: #FF7F9F;"></div>
-          <div class="item" style="background-color: #FF7F7F;"></div>
-          <div class="item" style="background-color: #FFBF9F;"></div>
+          <div class="item" style="background-color: #FF7FBF;" @click="goToPlaybackControls('#FF7FBF')"></div>
+          <div class="item" style="background-color: #FF7F9F;" @click="goToPlaybackControls('#FF7F9F')"></div>
+          <div class="item" style="background-color: #FF7F7F;" @click="goToPlaybackControls('#FF7F7F')"></div>
+          <div class="item" style="background-color: #FFBF9F;" @click="goToPlaybackControls('#FFBF9F')"></div>
         </div>
       </div>
     </section>
@@ -45,21 +48,29 @@ export default {
   methods: {
     goToCustomTrack() {
       this.$router.push('/custom-track-creation');
-    }
-  }
+    },
+    goToPlaybackControls(color) {
+      this.$router.push({
+        name: 'PlaybackControls',
+        params: {
+          coverImage: color,
+        },
+      });
+    },
+  },
 };
 </script>
 
 <style scoped>
 .dream-factory {
-  min-height: 100vh; /* Ensures the container takes up at least the full viewport height */
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-start; /* Aligns the content to the left */
+  align-items: flex-start;
   position: relative;
-  overflow: hidden; /* Ensures the stars background won't overflow */
-  color: #dda0dd; /* Set the text color to light purple/pink */
+  overflow: hidden;
+  color: #dda0dd;
   padding: 20px;
 }
 
@@ -70,8 +81,8 @@ export default {
   width: 100%;
   height: 100%;
   background: url('@/assets/stars.png') repeat;
-  background-size: cover; /* Ensures the stars background covers the entire div */
-  z-index: -1; /* Keeps the background behind all other elements */
+  background-size: cover;
+  z-index: -1;
 }
 
 header {
@@ -81,7 +92,7 @@ header {
 }
 
 .title {
-  font-size: 3em; /* Increases the size of the REMI text */
+  font-size: 3em;
   margin: 20px 0;
 }
 
@@ -103,7 +114,7 @@ header {
 .category-items {
   display: flex;
   gap: 10px;
-  justify-content: flex-start; /* Align items to the left */
+  justify-content: flex-start;
 }
 
 .item {
