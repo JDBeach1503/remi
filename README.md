@@ -6,7 +6,7 @@ At Hack the North 11, dreaming big is a key theme. I wanted to play off of this 
 I enjoy listening to ambient music to wind down before I go to sleep, and I'm sure I'm not the only one who does, so I wanted to create something where people could, with the help of AI, make their own custom ambient tracks to listen to before or as they're falling asleep, overall enriching their pre-sleep routine and (hopefully) having better dreams.
 
 ## What it does
-The user, when making a custom track, enters up to three keywords (or "ambiances") that are then provided to the AI music generating platform Soundraw.io to create ambient music that closely aligns with their desired sound. There are also pre-made "templates" of ambient tracks that a user can easily click play and listen to at their leisure.
+The user, when making a custom track, enters up to three keywords (or "ambiances") that are then provided to the AI music generating platform soundraw.io to create ambient music that closely aligns with their desired sound. There are also pre-made "templates" of ambient tracks that a user can easily click play and listen to at their leisure.
 
 ## Installation and Setup
 To run this project on your computer, follow these steps:
@@ -48,3 +48,4 @@ Future improvements could include (but are not limited to):
 - Ability to go back in and edit a custom track after generating it
 - Ability to delete custom tracks
 - The capability to search and add other pre-made templates
+- Allowing user more freedom to customize track icons (ex: choose images for icons, rather than just colours)
