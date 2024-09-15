@@ -14,7 +14,6 @@ const routes = [
     component: PlaybackControls,
     props: true,
   },
-  // Other routes...
 ];
 
 const router = createRouter({

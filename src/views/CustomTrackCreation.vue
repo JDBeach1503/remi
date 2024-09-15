@@ -2,11 +2,10 @@
   <div class="custom-track-creation">
     <h1 class="title">Track Generator</h1>
 
-    <!-- Ambiance Selection -->
     <div class="ambiance-section">
       <label>Ambiance ({{ selectedAmbiances.length }}/3):</label>
       <div class="ambiance-tags">
-        <!-- Display pink bubbles for selected ambiances -->
+
         <div
           v-for="(ambiance, index) in selectedAmbiances"
           :key="index"
@@ -15,7 +14,7 @@
         >
           {{ ambiance }} <span class="remove">x</span>
         </div>
-        <!-- Display yellow bubbles for available ambiances -->
+      
         <div
           v-for="(ambiance, index) in availableAmbiances"
           :key="index"
@@ -27,7 +26,7 @@
       </div>
     </div>
 
-    <!-- Prompt -->
+
     <div class="prompt-section">
       <label for="prompt">Prompt:</label>
       <textarea
@@ -38,13 +37,13 @@
       ></textarea>
     </div>
 
-    <!-- Length -->
+ 
     <div class="length-section">
       <label>Length:</label>
       <div class="length-display">00:00:00</div>
     </div>
 
-    <!-- Track Name and Color Selection -->
+    
     <div class="track-details-section">
       <label for="trackName">Track Name:</label>
       <input type="text" id="trackName" v-model="trackName" required />
@@ -53,7 +52,7 @@
       <input type="color" id="trackColor" v-model="trackColor" required />
     </div>
 
-    <!-- Generate Button -->
+    
     <button @click="generateTrack">Generate</button>
   </div>
 </template>
@@ -63,7 +62,7 @@ export default {
   name: "CustomTrackCreation",
   data() {
     return {
-      selectedAmbiances: ["white noise", "rain", "talking"], // Pre-selected for example
+      selectedAmbiances: ["white noise", "rain", "talking"],
       availableAmbiances: [
         "classroom",
         "waves",
@@ -75,7 +74,7 @@ export default {
       ],
       prompt: "",
       trackName: "",
-      trackColor: "#FF7F7F", // Default color
+      trackColor: "#FF7F7F",
     };
   },
   methods: {
@@ -86,7 +85,7 @@ export default {
         } else {
           this.availableAmbiances.push(this.prompt.trim());
         }
-        this.prompt = ""; // Clear the prompt input
+        this.prompt = "";
       }
     },
     addAmbiance(ambiance) {
@@ -108,7 +107,7 @@ export default {
       }
     },
     generateTrack() {
-      // Mapping of keywords to track filenames
+  
       const keywordToTrackMap = {
         "rain": "/tracks/gentlerain.mp3",
         "seaside": "/tracks/seaside.mp3",
@@ -122,11 +121,9 @@ export default {
         "crickets": "/tracks/crickets.mp3",
         "waves": "/tracks/waves.mp3",
         "talking": "/tracks/talking.mp3",
-        // Add more mappings here...
       };
 
-      // Find the first keyword that matches a track
-      let matchedTrack = "/tracks/default.mp3"; // Default track if no match is found
+      let matchedTrack = "/tracks/default.mp3";
       for (const ambiance of this.selectedAmbiances) {
         if (keywordToTrackMap[ambiance.toLowerCase()]) {
           matchedTrack = keywordToTrackMap[ambiance.toLowerCase()];
@@ -138,7 +135,7 @@ export default {
         name: this.trackName,
         color: this.trackColor,
         ambiances: this.selectedAmbiances,
-        track: matchedTrack, // Assign the matched track
+        track: matchedTrack,
       };
 
       localStorage.setItem("newTrack", JSON.stringify(newTrack));
